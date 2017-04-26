@@ -104,7 +104,22 @@ class Spacy(Resource):
             ret['sentences'].append(sentence_analysis)
         return ret
 
-api.add_resource(Spacy, '/api')
+
+class Case(Resource):
+    def get(self):
+        return nlp.tokenizer._specials
+    def post(self):
+        args = parser.parse_args()
+        if text = args.get('text') and attr_list = args.get_list('attr_list'):
+            if nlp.tokenizer.add_special_case(text, attr_list):
+                response = "Created", 201
+        else:
+            response = "Invalid Parameters", 400
+
+        return response
+
+api.add_resource(Spacy, '/api/v1/analyze')
+api.add_resource(Case, '/api/v1/case')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=os.environ.get('PORT') or 5000)
